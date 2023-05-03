@@ -20,3 +20,15 @@ class CreatePasswordSerializer(Serializer):
     password = CharField(write_only=True, required=True, label="password")
     confirm_password = CharField(write_only=True, required=True, label="confirm_password")
     token = CharField(required=True)
+
+
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=255)
+    confirm_password = serializers.CharField(max_length=255)
+    token = serializers.CharField(max_length=255)
+    email = serializers.EmailField()
