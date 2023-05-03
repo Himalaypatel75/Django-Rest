@@ -1,0 +1,33 @@
+# Django & Python related files
+*.pyc
+__pycache__/
+*.pyo
+*.egg-info/
+*.egg
+*.log
+*.pot
+*.pyc
+local_settings.py
+# db.sqlite3
+
+# Development related files
+*.swp
+*.bak
+*.tmp
+
+# IDE specific files
+.idea/
+*.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Dependency directories
+venv/
+env/
+env2/
+env3/
+.venv/
+.venv2/
+.venv3/
+pip-cache/
+pipenv-lock/
