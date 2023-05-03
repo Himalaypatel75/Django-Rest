@@ -32,3 +32,7 @@ class ResetPasswordSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(max_length=255)
     token = serializers.CharField(max_length=255)
     email = serializers.EmailField()
+    
+class LoginUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)

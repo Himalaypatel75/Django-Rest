@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
-from .serializer import CreatePasswordSerializer, UserSignUpSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
+from .serializer import CreatePasswordSerializer, UserSignUpSerializer, LoginUserSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 from .models import User
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework.response import Response
@@ -8,6 +8,9 @@ from rest_framework import status
 from rest_framework.generics import (CreateAPIView)
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework.views import APIView
+from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 # Author - Himalay Patel (02-05-2023)
 
@@ -65,6 +68,7 @@ class CreatePasswordAPIView(CreateAPIView):
 
 class ForgotPasswordAPIView(APIView):
     serializer_class = ForgotPasswordSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -109,3 +113,25 @@ class ResetPasswordAPIView(APIView):
 
         return Response({"message": "Password reset successful", "status_code": status.HTTP_200_OK}) 
     
+
+class LoginUserApi(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        serializer = LoginUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        # Check for email and password
+        email = data['email'].lower() # Convert email to lowercase
+        user = authenticate(email=email, password=data['password'])
+        if not user:
+            raise serializers.ValidationError({'detail': 'Incorrect email or password'})
+
+        # Generate token and return response
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+            'name': user.name,
+            'email': user.email,
+        }, status=status.HTTP_200_OK)
